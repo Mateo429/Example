@@ -1,0 +1,20 @@
+SHELL:=/bin/bash
+
+all: vector_main.x  #Establecemos el target all que crea el ejecutable del archivo con la función main, se corre con el comando
+                    #make -f Makefile.txt, esto crea el ejecutable vector_main.x y luego este se ejecuta con ./vector_main.x "tamaño del                    # arreglo".
+
+test: vector_test.x #Establecemos el target que ejecuta el archivo con los test, se ejecuta con el comando make -f Makefile.txt test.
+	./$<        
+
+%.x: %.o vector_ops.o
+	source $$HOME/repos/spack/share/spack/setup-env.sh; \
+	spack load catch2; \
+	g++ $$(pkg-config --cflags catch2) $^ -o $@
+
+%.o: %.cpp
+	source $$HOME/repos/spack/share/spack/setup-env.sh; \
+	spack load catch2; \
+	g++ $$(pkg-config --cflags catch2) -c $<
+
+clean:
+	rm -f *.o *.x
